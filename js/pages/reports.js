@@ -1,0 +1,13 @@
+import { icon, money } from "../utils.js";
+
+export function render({ state }) {
+  const students = state.students.length;
+  const completed = state.students.filter(student => student.status === "Completed").length;
+  const revenue = state.admissions.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  return `<section class="page-view reports-page">
+    <header class="entity-heading"><div><p class="eyebrow">MEANINGFUL SIGNAL, NOT MORE NOISE</p><h1 class="display-title">The bigger picture<span class="title-period">.</span></h1><p>See what’s resonating, what’s growing and where to put your care next.</p></div><div class="report-actions"><select class="filter-select" id="report-period" aria-label="Report time period"><option value="6">Last 6 months</option><option value="12">Last 12 months</option></select><button class="button button-primary" type="button" data-action="export-report">${icon("download")}Export report</button></div></header>
+    <div class="report-stat-row"><article><small>Collected tuition</small><strong>${money(revenue)}</strong><span>Across current admissions</span></article><article><small>Learner growth</small><strong>${students}</strong><span>+18.2% this term</span></article><article><small>Course completion</small><strong>${students ? Math.round(completed / students * 100) : 0}%</strong><span>${completed} learners finished</span></article><article><small>Lead conversion</small><strong>${state.leads.length ? Math.round(state.admissions.length / state.leads.length * 100) : 0}%</strong><span>Enquiries to enrollment</span></article></div>
+    <div class="report-grid"><article class="surface report-chart-panel"><header class="panel-heading"><div><p class="panel-kicker">REVENUE, BY MONTH</p><h2>Small wins add up.</h2><p>Course and workshop income</p></div><span class="report-chip">${icon("trend")}Growing steadily</span></header><div class="chart-canvas"><canvas id="report-chart" aria-label="Revenue and enrollment report chart"></canvas></div><div class="chart-legend"><span class="legend-entry"><i class="legend-swatch"></i>Current year</span><span class="legend-entry"><i class="legend-swatch coral"></i>Prior year</span></div></article>
+    <article class="surface report-breakdown"><header class="panel-heading"><div><p class="panel-kicker">A HEALTHY MIX</p><h2>Courses in motion</h2></div></header>${[...state.courses].sort((a,b)=>b.enrolled-a.enrolled).slice(0,4).map(course=>`<div class="report-course-row"><span>${icon("book")}</span><div><strong>${course.name}</strong><small>${course.category}</small></div><b>${course.enrolled}</b></div>`).join("")}<button class="text-link" type="button" data-route="courses">Explore catalog ${icon("arrow-right")}</button></article></div>
+  </section>`;
+}
